@@ -1,27 +1,41 @@
 'use strict';
 
 var ADS_QUANTITY = 8;
-var ads = [];
 
-var randomInteger = function (uBound) {
+var getRandomInteger = function (uBound) {
   return Math.round(Math.random() * uBound);
 };
 
-var randomArrayItem = function (arr) {
-  return arr[randomInteger(arr.length - 1)];
+var getRandomArrayItem = function (arr) {
+  return arr[getRandomInteger(arr.length - 1)];
 };
 
-var randomArrayItems = function (arr) {
+var mixElements = function (arr) {
   var a = [];
   for (var i = 0; i < arr.length; i++) {
+    a.push(arr[i]);
+  }
+  var mixed = [];
+  for (var j = a.length - 1; j >= 0; j--) {
+    var indexOfA = getRandomInteger(j);
+    mixed.push(a[indexOfA]);
+    a.splice(indexOfA, 1);
+  }
+  return mixed;
+};
+
+var getRandomArrayItems = function (arr) {
+  var b = [];
+  for (var k = 0; k < arr.length; k++) {
     if (Math.random() > 0.5) {
-      a.push(arr[i]);
+      b.push(arr[k]);
     }
   }
-  return a;
+  return mixElements(b);
 };
 
 var populateAds = function (blockSize) {
+  var adsArray = [];
   for (var i = 0; i < ADS_QUANTITY; i++) {
     var ad = {
       'author': {
@@ -32,36 +46,41 @@ var populateAds = function (blockSize) {
         'title': 'строка, заголовок предложения',
         'address': '600, 350',
         'price': 100,
-        'type': randomArrayItem(['palace', 'flat', 'house', 'bungalo']),
-        'rooms': randomInteger(9) + 1,
-        'guests': randomInteger(49) + 1,
-        'checkin': randomArrayItem(['12:00', '13:00', '14:00']),
-        'checkout': randomArrayItem(['12:00', '13:00', '14:00']),
-        'features': randomArrayItems(['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']),
+        'type': getRandomArrayItem(['palace', 'flat', 'house', 'bungalo']),
+        'rooms': getRandomInteger(9) + 1,
+        'guests': getRandomInteger(49) + 1,
+        'checkin': getRandomArrayItem(['12:00', '13:00', '14:00']),
+        'checkout': getRandomArrayItem(['12:00', '13:00', '14:00']),
+        'features': getRandomArrayItems(['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']),
         'description': 'строка с описанием',
-        'photos': randomArrayItems(['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'])
+        'photos': getRandomArrayItems(['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'])
       },
 
       'location': {
-        'x': randomInteger(blockSize - 1),
-        'y': randomInteger(630 - 130) + 130
+        'x': getRandomInteger(blockSize - 1),
+        'y': getRandomInteger(630 - 130) + 130
       }
     };
-    ads.push(ad);
+    adsArray.push(ad);
   }
+  return adsArray;
 };
 
-populateAds(1200);
+var ads = populateAds(1200);
 
-var activeMap = document.querySelector('.map');
-activeMap.classList.remove('map--faded');
+var activateMap = function () {
+  var mapElement = document.querySelector('.map');
+  mapElement.classList.remove('map--faded');
+};
 
-var pins = document.querySelector('.map__pins');
+activateMap();
+
+var pinsElement = document.querySelector('.map__pins');
 var fragment = document.createDocumentFragment();
-var pin = document.querySelector('#pin');
+var mainPinElement = document.querySelector('#pin');
 
 for (var i = 0; i < ADS_QUANTITY; i++) {
-  var clonePin = pin.content.cloneNode(true);
+  var clonePin = mainPinElement.content.cloneNode(true);
   var clonePinElement = clonePin.querySelector('.map__pin');
   clonePinElement.style.left = ads[i].location.x + 'px';
   clonePinElement.style.top = ads[i].location.y + 'px';
@@ -70,4 +89,4 @@ for (var i = 0; i < ADS_QUANTITY; i++) {
   fragment.appendChild(clonePinElement);
 }
 
-pins.appendChild(fragment);
+pinsElement.appendChild(fragment);

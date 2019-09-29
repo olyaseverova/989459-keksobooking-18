@@ -82,10 +82,11 @@ var mainPinElement = document.querySelector('#pin');
 for (var i = 0; i < ADS_QUANTITY; i++) {
   var clonePin = mainPinElement.content.cloneNode(true);
   var clonePinElement = clonePin.querySelector('.map__pin');
+  var pinImageElement = clonePinElement.querySelector('img');
   clonePinElement.style.left = ads[i].location.x + 'px';
   clonePinElement.style.top = ads[i].location.y + 'px';
-  clonePinElement.src = ads[i].author.avatar;
-  clonePinElement.alt = ads[i].offer.title;
+  pinImageElement.src = ads[i].author.avatar;
+  pinImageElement.alt = ads[i].offer.title;
   fragment.appendChild(clonePinElement);
 }
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var ADS_QUANTITY = 8;
+var ENTER_KEYCODE = 13;
 
 var getRandomInteger = function (uBound) {
   return Math.round(Math.random() * uBound);
@@ -73,8 +74,6 @@ var activateMap = function () {
   mapElement.classList.remove('map--faded');
 };
 
-activateMap();
-
 var pinsElement = document.querySelector('.map__pins');
 var fragment = document.createDocumentFragment();
 var mainPinElement = document.querySelector('#pin');
@@ -90,4 +89,52 @@ for (var i = 0; i < ADS_QUANTITY; i++) {
   fragment.appendChild(clonePinElement);
 }
 
-pinsElement.appendChild(fragment);
+var mainMapPinElement = document.querySelector('.map__pin--main');
+
+var pressingMainPin = function () {
+  activateMap();
+  pinsElement.appendChild(fragment);
+};
+
+var addressElement = document.querySelector('#address');
+var addressX = Number(mainMapPinElement.style.left.replace('px', ''));
+var addressY = Number(mainMapPinElement.style.top.replace('px', ''));
+
+var centerOfMainPinX = 32;
+var centerOfMainPinY = 32;
+var bottomOfMainPinY = 75;
+
+addressElement.value += (addressX + centerOfMainPinX) + ', ' + (addressY + centerOfMainPinY);
+
+var getAddressCoordinates = function () {
+  addressElement.value = (addressX + centerOfMainPinX) + ', ' + (addressY + bottomOfMainPinY);
+};
+
+mainMapPinElement.addEventListener('mousedown', function () {
+  pressingMainPin();
+  getAddressCoordinates();
+});
+
+mainMapPinElement.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    pressingMainPin();
+    getAddressCoordinates();
+  }
+});
+
+var roomsElemet = document.querySelector('#room_number');
+var capacityElement = document.querySelector('#capacity');
+
+roomsElemet.addEventListener('mousedown', function () {
+  capacityElement.value = roomsElemet.value;
+  if (roomsElemet.value === '100') {
+    capacityElement.value = '0';
+  }
+});
+
+capacityElement.addEventListener('mousedown', function () {
+  roomsElemet.value = capacityElement.value;
+  if (capacityElement.value === '0') {
+    roomsElemet.value = '100';
+  }
+});

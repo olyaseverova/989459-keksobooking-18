@@ -74,6 +74,11 @@ var activateMap = function () {
   mapElement.classList.remove('map--faded');
 };
 
+var activateForm = function () {
+  var formElement = document.querySelector('.ad-form');
+  formElement.classList.remove('ad-form--disabled');
+};
+
 var pinsElement = document.querySelector('.map__pins');
 var fragment = document.createDocumentFragment();
 var mainPinElement = document.querySelector('#pin');
@@ -91,50 +96,71 @@ for (var i = 0; i < ADS_QUANTITY; i++) {
 
 var mainMapPinElement = document.querySelector('.map__pin--main');
 
-var pressingMainPin = function () {
-  activateMap();
-  pinsElement.appendChild(fragment);
-};
-
 var addressElement = document.querySelector('#address');
-var addressX = Number(mainMapPinElement.style.left.replace('px', ''));
-var addressY = Number(mainMapPinElement.style.top.replace('px', ''));
 
-var centerOfMainPinX = 32;
-var centerOfMainPinY = 32;
+var centerOfMainPin = 32;
 var bottomOfMainPinY = 75;
 
-addressElement.value += (addressX + centerOfMainPinX) + ', ' + (addressY + centerOfMainPinY);
+var addressX = Number.parseInt(mainMapPinElement.style.left, 10) + centerOfMainPin;
+var addressY = Number.parseInt(mainMapPinElement.style.top, 10) + centerOfMainPin;
+var addressBottomY = Number.parseInt(mainMapPinElement.style.top, 10) + bottomOfMainPinY;
 
-var getAddressCoordinates = function () {
-  addressElement.value = (addressX + centerOfMainPinX) + ', ' + (addressY + bottomOfMainPinY);
+addressElement.value = addressX + ', ' + addressY;
+
+var changeAddressCoordinates = function () {
+  addressElement.value = addressX + ', ' + addressBottomY;
+};
+
+var roomsElement = document.querySelector('#room_number');
+var capacityElement = document.querySelector('#capacity');
+
+var changeCapacity = function () {
+  capacityElement.value = roomsElement.value;
+  if (roomsElement.value === '100') {
+    capacityElement.value = '0';
+  }
+};
+
+var changeRooms = function () {
+  roomsElement.value = capacityElement.value;
+  if (capacityElement.value === '0') {
+    roomsElement.value = '100';
+  }
+};
+
+var pushMainPin = function () {
+  activateMap();
+  activateForm();
+  changeAddressCoordinates();
+  pinsElement.appendChild(fragment);
+
+  roomsElement.addEventListener('mousedown', function () {
+    changeCapacity();
+  });
+
+  roomsElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      changeCapacity();
+    }
+  });
+
+  capacityElement.addEventListener('mousedown', function () {
+    changeRooms();
+  });
+
+  capacityElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      changeRooms();
+    }
+  });
 };
 
 mainMapPinElement.addEventListener('mousedown', function () {
-  pressingMainPin();
-  getAddressCoordinates();
+  pushMainPin();
 });
 
 mainMapPinElement.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    pressingMainPin();
-    getAddressCoordinates();
-  }
-});
-
-var roomsElemet = document.querySelector('#room_number');
-var capacityElement = document.querySelector('#capacity');
-
-roomsElemet.addEventListener('mousedown', function () {
-  capacityElement.value = roomsElemet.value;
-  if (roomsElemet.value === '100') {
-    capacityElement.value = '0';
-  }
-});
-
-capacityElement.addEventListener('mousedown', function () {
-  roomsElemet.value = capacityElement.value;
-  if (capacityElement.value === '0') {
-    roomsElemet.value = '100';
+    pushMainPin();
   }
 });

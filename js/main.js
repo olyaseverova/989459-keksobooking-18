@@ -114,17 +114,13 @@ var changeAddressCoordinates = function () {
 var roomsElement = document.querySelector('#room_number');
 var capacityElement = document.querySelector('#capacity');
 
-var changeCapacity = function () {
-  capacityElement.value = roomsElement.value;
-  if (roomsElement.value === '100') {
-    capacityElement.value = '0';
-  }
-};
-
-var changeRooms = function () {
-  roomsElement.value = capacityElement.value;
-  if (capacityElement.value === '0') {
-    roomsElement.value = '100';
+var changeRoomsOrCapecity = function () {
+  if ((Number.parseInt(roomsElement.value, 10) <= 3 && capacityElement.value > roomsElement.value) || (Number.parseInt(roomsElement.value, 10) === 100 && capacityElement.value !== '0')) {
+    capacityElement.setCustomValidity('error');
+    roomsElement.setCustomValidity('error');
+  } else {
+    capacityElement.setCustomValidity('');
+    roomsElement.setCustomValidity('');
   }
 };
 
@@ -135,22 +131,22 @@ var pushMainPin = function () {
   pinsElement.appendChild(fragment);
 
   roomsElement.addEventListener('mousedown', function () {
-    changeCapacity();
+    changeRoomsOrCapecity();
+  });
+
+  capacityElement.addEventListener('mousedown', function () {
+    changeRoomsOrCapecity();
   });
 
   roomsElement.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      changeCapacity();
+      changeRoomsOrCapecity();
     }
-  });
-
-  capacityElement.addEventListener('mousedown', function () {
-    changeRooms();
   });
 
   capacityElement.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      changeRooms();
+      changeRoomsOrCapecity();
     }
   });
 };

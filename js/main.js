@@ -114,7 +114,7 @@ var changeAddressCoordinates = function () {
 var roomsElement = document.querySelector('#room_number');
 var capacityElement = document.querySelector('#capacity');
 
-var changeRoomsOrCapecity = function () {
+var changeRoomsOrCapacity = function () {
   if ((Number.parseInt(roomsElement.value, 10) <= 3 && capacityElement.value > roomsElement.value) || (Number.parseInt(roomsElement.value, 10) === 100 && capacityElement.value !== '0')) {
     capacityElement.setCustomValidity('error');
     roomsElement.setCustomValidity('error');
@@ -130,24 +130,12 @@ var pushMainPin = function () {
   changeAddressCoordinates();
   pinsElement.appendChild(fragment);
 
-  roomsElement.addEventListener('mousedown', function () {
-    changeRoomsOrCapecity();
+  roomsElement.addEventListener('change', function () {
+    changeRoomsOrCapacity();
   });
 
-  capacityElement.addEventListener('mousedown', function () {
-    changeRoomsOrCapecity();
-  });
-
-  roomsElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      changeRoomsOrCapecity();
-    }
-  });
-
-  capacityElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      changeRoomsOrCapecity();
-    }
+  capacityElement.addEventListener('change', function () {
+    changeRoomsOrCapacity();
   });
 };
 

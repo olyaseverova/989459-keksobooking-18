@@ -1,6 +1,7 @@
 'use strict';
 
 var ADS_QUANTITY = 8;
+var ENTER_KEYCODE = 13;
 
 var getRandomInteger = function (uBound) {
   return Math.round(Math.random() * uBound);
@@ -73,7 +74,10 @@ var activateMap = function () {
   mapElement.classList.remove('map--faded');
 };
 
-activateMap();
+var activateForm = function () {
+  var formElement = document.querySelector('.ad-form');
+  formElement.classList.remove('ad-form--disabled');
+};
 
 var pinsElement = document.querySelector('.map__pins');
 var fragment = document.createDocumentFragment();
@@ -90,4 +94,60 @@ for (var i = 0; i < ADS_QUANTITY; i++) {
   fragment.appendChild(clonePinElement);
 }
 
-pinsElement.appendChild(fragment);
+var mainMapPinElement = document.querySelector('.map__pin--main');
+
+var addressElement = document.querySelector('#address');
+
+var centerOfMainPin = 32;
+var bottomOfMainPinY = 75;
+
+var addressX = Number.parseInt(mainMapPinElement.style.left, 10) + centerOfMainPin;
+var addressY = Number.parseInt(mainMapPinElement.style.top, 10) + centerOfMainPin;
+var addressBottomY = Number.parseInt(mainMapPinElement.style.top, 10) + bottomOfMainPinY;
+
+addressElement.value = addressX + ', ' + addressY;
+
+var changeAddressCoordinates = function () {
+  addressElement.value = addressX + ', ' + addressBottomY;
+};
+
+var roomsElement = document.querySelector('#room_number');
+var capacityElement = document.querySelector('#capacity');
+
+var changeRoomsOrCapacity = function () {
+  if (
+    (Number.parseInt(roomsElement.value, 10) <= 3 && Number.parseInt(roomsElement.value, 10) > 0
+    && (capacityElement.value > roomsElement.value || capacityElement.value === '0'))
+    || (roomsElement.value === '100' && capacityElement.value !== '0')) {
+    capacityElement.setCustomValidity('error');
+    roomsElement.setCustomValidity('error');
+  } else {
+    capacityElement.setCustomValidity('');
+    roomsElement.setCustomValidity('');
+  }
+};
+
+var pushMainPin = function () {
+  activateMap();
+  activateForm();
+  changeAddressCoordinates();
+  pinsElement.appendChild(fragment);
+
+  roomsElement.addEventListener('change', function () {
+    changeRoomsOrCapacity();
+  });
+
+  capacityElement.addEventListener('change', function () {
+    changeRoomsOrCapacity();
+  });
+};
+
+mainMapPinElement.addEventListener('mousedown', function () {
+  pushMainPin();
+});
+
+mainMapPinElement.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    pushMainPin();
+  }
+});

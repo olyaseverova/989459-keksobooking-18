@@ -17,7 +17,7 @@
     fragment.appendChild(clonePinElement);
   }
 
-  window.pins = {
+  window.map = {
     pinsElement: pinsElement,
     fragment: fragment
   };

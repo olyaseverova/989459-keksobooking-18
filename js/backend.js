@@ -3,8 +3,9 @@
 (function () {
 
   var load = function (onLoad, onError) {
-    var URL = 'https://js.dump.academy/keksobooking/data';
     var xhr = new XMLHttpRequest();
+    var URL = 'https://js.dump.academy/keksobooking/data';
+    var TIMEOUT = xhr.timeout = 10000; // 10s
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
@@ -18,10 +19,8 @@
       onError('Произошла ошибка соединения');
     });
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      onError('Запрос не успел выполниться за ' + TIMEOUT + 'мс');
     });
-
-    xhr.timeout = 10000; // 10s
 
     xhr.open('GET', URL);
     xhr.send();

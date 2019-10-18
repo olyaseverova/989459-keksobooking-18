@@ -7,10 +7,22 @@
   var pinsElement = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
-  var typeElement = document.querySelector('#type');
+  var houseTypeElement = document.querySelector('#housing-type');
+  var mapPinMainElement = document.querySelector('.map__pin--main');
 
   window.data = {
     ads: null,
+  };
+
+  var insertPin = function (ad) {
+    var clonePin = mainPinElement.content.cloneNode(true);
+    var clonePinElement = clonePin.querySelector('.map__pin');
+    var pinImageElement = clonePinElement.querySelector('img');
+    clonePinElement.style.left = ad.location.x + 'px';
+    clonePinElement.style.top = ad.location.y + 'px';
+    pinImageElement.src = ad.author.avatar;
+    pinImageElement.alt = ad.offer.title;
+    fragment.appendChild(clonePinElement);
   };
 
   var successHandler = function (data) {
@@ -25,16 +37,9 @@
       if (k >= PINS_QUANTITY) {
         break;
       }
-      if (isFirstTime || typeElement.value === window.data.ads[i].offer.type) {
+      if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
         k++;
-        var clonePin = mainPinElement.content.cloneNode(true);
-        var clonePinElement = clonePin.querySelector('.map__pin');
-        var pinImageElement = clonePinElement.querySelector('img');
-        clonePinElement.style.left = window.data.ads[i].location.x + 'px';
-        clonePinElement.style.top = window.data.ads[i].location.y + 'px';
-        pinImageElement.src = window.data.ads[i].author.avatar;
-        pinImageElement.alt = window.data.ads[i].offer.title;
-        fragment.appendChild(clonePinElement);
+        insertPin(window.data.ads[i]);
       }
     }
 
@@ -44,10 +49,15 @@
     };
   };
 
-  typeElement.addEventListener('change', function () {
-    successHandler();
+  var drawPins = function () {
     window.map.pinsElement.innerHTML = '';
+    window.map.pinsElement.appendChild(mapPinMainElement);
     window.map.pinsElement.appendChild(window.map.fragment);
+  };
+
+  houseTypeElement.addEventListener('change', function () {
+    successHandler();
+    drawPins();
   });
 
   var errorHandler = function () {

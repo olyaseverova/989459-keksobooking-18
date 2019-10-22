@@ -4,14 +4,16 @@
 
   var PINS_QUANTITY = 5;
 
+  var mapElement = document.querySelector('.map');
   var pinsElement = document.querySelector('.map__pins');
-  var fragment = document.createDocumentFragment();
+  var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
   var houseTypeElement = document.querySelector('#housing-type');
   var mapPinMainElement = document.querySelector('.map__pin--main');
 
   window.data = {
     ads: null,
+    mapElement: mapElement
   };
 
   var insertPin = function (ad) {
@@ -22,7 +24,7 @@
     clonePinElement.style.top = ad.location.y + 'px';
     pinImageElement.src = ad.author.avatar;
     pinImageElement.alt = ad.offer.title;
-    fragment.appendChild(clonePinElement);
+    fragmentPin.appendChild(clonePinElement);
   };
 
   var successHandler = function (data) {
@@ -32,20 +34,27 @@
       window.data.ads = data;
     }
 
+    var pins = [];
     var k = 0;
     for (var i = 0; i < window.data.ads.length; i++) {
       if (k >= PINS_QUANTITY) {
         break;
       }
       if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
+        pins.innerHTML = '';
         k++;
         insertPin(window.data.ads[i]);
+        pins.push(window.data.ads[i]);
       }
     }
 
+    var firstPin = pins[0];
+
     window.map = {
+      firstPin: firstPin,
+      pins: pins,
       pinsElement: pinsElement,
-      fragment: fragment
+      fragmentPin: fragmentPin
     };
   };
 

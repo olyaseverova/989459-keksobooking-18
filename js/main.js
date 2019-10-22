@@ -17,8 +17,9 @@
   var pushMainPin = function () {
     activateMap();
     activateForm();
+    window.card.activateCard();
     window.address.changeAddressCoordinates();
-    window.map.pinsElement.appendChild(window.map.fragment);
+    window.map.pinsElement.appendChild(window.map.fragmentPin);
 
     window.form.roomsElement.addEventListener('change', function () {
       window.form.changeRoomsOrCapacity();

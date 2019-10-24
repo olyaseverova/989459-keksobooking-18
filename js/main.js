@@ -17,7 +17,7 @@
   var pushMainPin = function () {
     activateMap();
     activateForm();
-    window.card.activateCard();
+    window.card.activateCard(window.map.firstPin);
     window.address.changeAddressCoordinates();
     window.map.pinsElement.appendChild(window.map.fragmentPin);
 

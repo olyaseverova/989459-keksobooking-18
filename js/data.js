@@ -24,7 +24,18 @@
     clonePinElement.style.top = ad.location.y + 'px';
     pinImageElement.src = ad.author.avatar;
     pinImageElement.alt = ad.offer.title;
+    clonePinElement.ad = ad;
     fragmentPin.appendChild(clonePinElement);
+
+    clonePinElement.addEventListener('mousedown', function () {
+      window.card.activateCard(clonePinElement.ad);
+    });
+
+    clonePinElement.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.main.ENTER_KEYCODE) {
+        window.card.activateCard(clonePinElement.ad);
+      }
+    });
   };
 
   var successHandler = function (data) {
@@ -45,6 +56,7 @@
         k++;
         insertPin(window.data.ads[i]);
         pins.push(window.data.ads[i]);
+
       }
     }
 
@@ -60,8 +72,9 @@
 
   var drawPins = function () {
     window.map.pinsElement.innerHTML = '';
+    window.card.activateCard(window.map.firstPin);
     window.map.pinsElement.appendChild(mapPinMainElement);
-    window.map.pinsElement.appendChild(window.map.fragment);
+    window.map.pinsElement.appendChild(window.map.fragmentPin);
   };
 
   houseTypeElement.addEventListener('change', function () {

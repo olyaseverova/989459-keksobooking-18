@@ -18,10 +18,45 @@
     }
   };
 
+  var typeElement = document.querySelector('#type');
+  var priceElement = document.querySelector('#price');
+
+  var changeTypeOrPrice = function () {
+    if ((typeElement.value === 'bungalo' && Number.parseInt(priceElement.value, 10) < 0)
+    || (typeElement.value === 'flat' && Number.parseInt(priceElement.value, 10) < 1000)
+    || (typeElement.value === 'house' && Number.parseInt(priceElement.value, 10) < 5000)
+    || (typeElement.value === 'palace' && Number.parseInt(priceElement.value, 10) < 10000)) {
+      priceElement.setCustomValidity('error');
+    } else {
+      priceElement.setCustomValidity('');
+    }
+  };
+
+  var timeInElement = document.querySelector('#timein');
+  var timeOutElement = document.querySelector('#timeout');
+
+  var changeTime = function () {
+    if (timeInElement.value !== timeOutElement.value) {
+      timeInElement.setCustomValidity('error');
+      timeOutElement.setCustomValidity('error');
+    } else {
+      timeInElement.setCustomValidity('');
+      timeOutElement.setCustomValidity('');
+    }
+  };
+
   window.form = {
     changeRoomsOrCapacity: changeRoomsOrCapacity,
     roomsElement: roomsElement,
-    capacityElement: capacityElement
+    capacityElement: capacityElement,
+
+    typeElement: typeElement,
+    priceElement: priceElement,
+    changeTypeOrPrice: changeTypeOrPrice,
+
+    timeInElement: timeInElement,
+    timeOutElement: timeOutElement,
+    changeTime: changeTime
   };
 
 })();

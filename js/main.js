@@ -26,8 +26,25 @@
     });
 
     window.form.capacityElement.addEventListener('change', function () {
-      window.formchangeRoomsOrCapacity();
+      window.form.changeRoomsOrCapacity();
     });
+
+    window.form.typeElement.addEventListener('change', function () {
+      window.form.changeTypeOrPrice();
+    });
+
+    window.form.priceElement.addEventListener('change', function () {
+      window.form.changeTypeOrPrice();
+    });
+
+    window.form.timeInElement.addEventListener('change', function () {
+      window.form.changeTime();
+    });
+
+    window.form.timeOutElement.addEventListener('change', function () {
+      window.form.changeTime();
+    });
+
   };
 
   window.address.mainMapPinElement.addEventListener('mousedown', function () {
@@ -39,5 +56,9 @@
       pushMainPin();
     }
   });
+
+  window.main = {
+    ENTER_KEYCODE: ENTER_KEYCODE
+  };
 
 })();

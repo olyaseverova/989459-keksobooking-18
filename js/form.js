@@ -21,11 +21,15 @@
   var typeElement = document.querySelector('#type');
   var priceElement = document.querySelector('#price');
 
+  var priceLimit = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
+
   var changeTypeOrPrice = function () {
-    if ((typeElement.value === 'bungalo' && Number.parseInt(priceElement.value, 10) < 0)
-    || (typeElement.value === 'flat' && Number.parseInt(priceElement.value, 10) < 1000)
-    || (typeElement.value === 'house' && Number.parseInt(priceElement.value, 10) < 5000)
-    || (typeElement.value === 'palace' && Number.parseInt(priceElement.value, 10) < 10000)) {
+    if (Number.parseInt(priceElement.value, 10) < priceLimit[typeElement.value]) {
       priceElement.setCustomValidity('error');
     } else {
       priceElement.setCustomValidity('');

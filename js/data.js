@@ -28,12 +28,12 @@
     fragmentPin.appendChild(clonePinElement);
 
     clonePinElement.addEventListener('mousedown', function () {
-      window.card.activateCard(clonePinElement.ad);
+      window.card.activateAd(clonePinElement.ad);
     });
 
     clonePinElement.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.main.ENTER_KEYCODE) {
-        window.card.activateCard(clonePinElement.ad);
+        window.card.activateAd(clonePinElement.ad);
       }
     });
   };
@@ -72,7 +72,7 @@
 
   var drawPins = function () {
     window.map.pinsElement.innerHTML = '';
-    window.card.activateCard(window.map.firstPin);
+    window.card.activateAd(window.map.firstPin);
     window.map.pinsElement.appendChild(mapPinMainElement);
     window.map.pinsElement.appendChild(window.map.fragmentPin);
   };

@@ -28,6 +28,8 @@
     fragmentPin.appendChild(clonePinElement);
 
     clonePinElement.addEventListener('mousedown', function () {
+      var mapCard = window.map.pinsElement.querySelector('.map__card');
+      window.map.pinsElement.removeChild(mapCard);
       window.card.activateAd(clonePinElement.ad);
     });
 

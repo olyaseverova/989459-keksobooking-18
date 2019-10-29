@@ -11,7 +11,6 @@
     palace: 'Дворец',
   };
 
-
   var activateAd = function (pin) {
     var fragmentCard = document.createDocumentFragment();
 

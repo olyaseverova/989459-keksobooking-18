@@ -18,7 +18,6 @@
     activateMap();
     activateForm();
     window.card.activateAd(window.map.firstPin);
-    window.address.changeAddressCoordinates();
     window.map.pinsElement.appendChild(window.map.fragmentPin);
 
     window.form.roomsElement.addEventListener('change', function () {
@@ -47,11 +46,15 @@
 
   };
 
-  window.address.mainMapPinElement.addEventListener('mousedown', function () {
+  window.movement.mainMapPinElement.addEventListener('mousedown', function () {
+    if (window.isMainPinUsed) {
+      return;
+    }
+    window.isMainPinUsed = true;
     pushMainPin();
   });
 
-  window.address.mainMapPinElement.addEventListener('keydown', function (evt) {
+  window.movement.mainMapPinElement.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       pushMainPin();
     }

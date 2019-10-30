@@ -2,13 +2,18 @@
 
 (function () {
 
+  var CENTER_OF_MAIN_PIN = 32;
+  var BOTTOM_OF_MAIN_PIN = 75;
+
+  var TOP_LIMIT = 130;
+  var BOTTOM_LIMIT = 360;
+  var LEFT_LIMIT = -31;
+  var RIGHT_LIMIT = 1167;
+
   var mainMapPinElement = document.querySelector('.map__pin--main');
   var addressElement = document.querySelector('#address');
 
-  var centerOfMainPin = 32;
-  var bottomOfMainPinY = 75;
-
-  addressElement.value = (Number.parseInt(mainMapPinElement.style.left, 10) + centerOfMainPin) + ', ' + (Number.parseInt(mainMapPinElement.style.top, 10) + centerOfMainPin);
+  addressElement.value = (Number.parseInt(mainMapPinElement.style.left, 10) + CENTER_OF_MAIN_PIN) + ', ' + (Number.parseInt(mainMapPinElement.style.top, 10) + CENTER_OF_MAIN_PIN);
 
   mainMapPinElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -36,6 +41,23 @@
 
       mainMapPinElement.style.top = (mainMapPinElement.offsetTop - shift.y) + 'px';
       mainMapPinElement.style.left = (mainMapPinElement.offsetLeft - shift.x) + 'px';
+
+      if (Number.parseInt(mainMapPinElement.style.top, 10) < TOP_LIMIT) {
+        mainMapPinElement.style.top = TOP_LIMIT + 'px';
+        return;
+      }
+      if (Number.parseInt(mainMapPinElement.style.top, 10) > BOTTOM_LIMIT) {
+        mainMapPinElement.style.top = BOTTOM_LIMIT + 'px';
+        return;
+      }
+      if (Number.parseInt(mainMapPinElement.style.left, 10) < LEFT_LIMIT) {
+        mainMapPinElement.style.left = LEFT_LIMIT + 'px';
+        return;
+      }
+      if (Number.parseInt(mainMapPinElement.style.left, 10) > RIGHT_LIMIT) {
+        mainMapPinElement.style.left = RIGHT_LIMIT + 'px';
+        return;
+      }
     };
 
     var onMouseUp = function (upEvt) {
@@ -52,7 +74,7 @@
         mainMapPinElement.addEventListener('click', onClickPreventDefault);
       }
 
-      addressElement.value = (Number.parseInt(mainMapPinElement.style.left, 10) + centerOfMainPin) + ', ' + (Number.parseInt(mainMapPinElement.style.top, 10) + bottomOfMainPinY);
+      addressElement.value = (Number.parseInt(mainMapPinElement.style.left, 10) + CENTER_OF_MAIN_PIN) + ', ' + (Number.parseInt(mainMapPinElement.style.top, 10) + BOTTOM_OF_MAIN_PIN);
     };
 
     document.addEventListener('mousemove', onMouseMove);

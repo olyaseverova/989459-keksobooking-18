@@ -29,7 +29,9 @@
 
     clonePinElement.addEventListener('mousedown', function () {
       var mapCard = window.map.pinsElement.querySelector('.map__card');
-      window.map.pinsElement.removeChild(mapCard);
+      if (mapCard !== null) {
+        window.map.pinsElement.removeChild(mapCard);
+      }
       window.card.activateAd(clonePinElement.ad);
     });
 
@@ -47,26 +49,19 @@
       window.data.ads = data;
     }
 
-    var pins = [];
     var k = 0;
     for (var i = 0; i < window.data.ads.length; i++) {
       if (k >= PINS_QUANTITY) {
         break;
       }
       if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
-        pins.innerHTML = '';
         k++;
         insertPin(window.data.ads[i]);
-        pins.push(window.data.ads[i]);
 
       }
     }
 
-    var firstPin = pins[0];
-
     window.map = {
-      firstPin: firstPin,
-      pins: pins,
       pinsElement: pinsElement,
       fragmentPin: fragmentPin
     };
@@ -74,7 +69,6 @@
 
   var drawPins = function () {
     window.map.pinsElement.innerHTML = '';
-    window.card.activateAd(window.map.firstPin);
     window.map.pinsElement.appendChild(mapPinMainElement);
     window.map.pinsElement.appendChild(window.map.fragmentPin);
   };

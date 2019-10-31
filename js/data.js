@@ -36,8 +36,15 @@
     });
 
     clonePinElement.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.main.ENTER_KEYCODE) {
+      var mapCard = window.map.pinsElement.querySelector('.map__card');
+      if (evt.keyCode === window.card.ENTER_KEYCODE) {
         window.card.activateAd(clonePinElement.ad);
+      }
+      if (mapCard !== null && evt.keyCode === window.card.ENTER_KEYCODE) {
+        window.map.pinsElement.removeChild(mapCard);
+      }
+      if (mapCard !== null && evt.keyCode === window.card.ESC_KEYCODE) {
+        window.map.pinsElement.removeChild(mapCard);
       }
     });
   };
@@ -57,7 +64,6 @@
       if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
         k++;
         insertPin(window.data.ads[i]);
-
       }
     }
 

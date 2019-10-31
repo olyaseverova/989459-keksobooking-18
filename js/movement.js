@@ -6,7 +6,7 @@
   var BOTTOM_OF_MAIN_PIN = 75;
 
   var TOP_LIMIT = 130;
-  var BOTTOM_LIMIT = 360;
+  var BOTTOM_LIMIT = 630;
   var LEFT_LIMIT = -31;
   var RIGHT_LIMIT = 1167;
 

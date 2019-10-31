@@ -2,8 +2,6 @@
 
 (function () {
 
-  var ENTER_KEYCODE = 13;
-
   var activateMap = function () {
     var mapElement = document.querySelector('.map');
     mapElement.classList.remove('map--faded');
@@ -54,13 +52,9 @@
   });
 
   window.movement.mainMapPinElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
+    if (evt.keyCode === window.card.ENTER_KEYCODE) {
       pushMainPin();
     }
   });
-
-  window.main = {
-    ENTER_KEYCODE: ENTER_KEYCODE
-  };
 
 })();

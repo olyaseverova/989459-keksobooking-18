@@ -37,13 +37,13 @@
 
     clonePinElement.addEventListener('keydown', function (evt) {
       var mapCard = window.map.pinsElement.querySelector('.map__card');
-      if (evt.keyCode === window.card.ENTER_KEYCODE) {
+      if (evt.keyCode === window.universal.ENTER_KEYCODE) {
         window.card.activateAd(clonePinElement.ad);
       }
-      if (mapCard !== null && evt.keyCode === window.card.ENTER_KEYCODE) {
+      if (mapCard !== null && evt.keyCode === window.universal.ENTER_KEYCODE) {
         window.map.pinsElement.removeChild(mapCard);
       }
-      if (mapCard !== null && evt.keyCode === window.card.ESC_KEYCODE) {
+      if (mapCard !== null && evt.keyCode === window.universal.ESC_KEYCODE) {
         window.map.pinsElement.removeChild(mapCard);
       }
     });

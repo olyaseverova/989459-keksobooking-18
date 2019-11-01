@@ -7,8 +7,8 @@
 
   var TOP_LIMIT = 130;
   var BOTTOM_LIMIT = 630;
-  var LEFT_LIMIT = -31;
-  var RIGHT_LIMIT = 1167;
+  var LEFT_LIMIT = -CENTER_OF_MAIN_PIN;
+  var RIGHT_LIMIT = window.universal.bodyElement.clientWidth - CENTER_OF_MAIN_PIN;
 
   var mainMapPinElement = document.querySelector('.map__pin--main');
   var addressElement = document.querySelector('#address');

@@ -52,7 +52,7 @@
   });
 
   window.movement.mainMapPinElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.card.ENTER_KEYCODE) {
+    if (evt.keyCode === window.universal.ENTER_KEYCODE) {
       pushMainPin();
     }
   });

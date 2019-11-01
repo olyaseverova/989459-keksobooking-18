@@ -2,9 +2,6 @@
 
 (function () {
 
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
-
   var houseTypes = {
     flat: 'Квартира',
     bungalo: 'Бунгало',
@@ -82,16 +79,14 @@
       window.map.pinsElement.removeChild(mapCard);
     });
 
-    cardCloseElement.addEventListener('keygown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
+    cardCloseElement.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.universal.ENTER_KEYCODE) {
         window.map.pinsElement.removeChild(mapCard);
       }
     });
   };
 
   window.card = {
-    ESC_KEYCODE: ESC_KEYCODE,
-    ENTER_KEYCODE: ENTER_KEYCODE,
     activateAd: activateAd
   };
 

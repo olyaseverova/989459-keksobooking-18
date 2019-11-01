@@ -28,12 +28,23 @@
     fragmentPin.appendChild(clonePinElement);
 
     clonePinElement.addEventListener('mousedown', function () {
+      var mapCard = window.map.pinsElement.querySelector('.map__card');
+      if (mapCard !== null) {
+        window.map.pinsElement.removeChild(mapCard);
+      }
       window.card.activateAd(clonePinElement.ad);
     });
 
     clonePinElement.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.main.ENTER_KEYCODE) {
+      var mapCard = window.map.pinsElement.querySelector('.map__card');
+      if (evt.keyCode === window.universal.ENTER_KEYCODE) {
         window.card.activateAd(clonePinElement.ad);
+      }
+      if (mapCard !== null && evt.keyCode === window.universal.ENTER_KEYCODE) {
+        window.map.pinsElement.removeChild(mapCard);
+      }
+      if (mapCard !== null && evt.keyCode === window.universal.ESC_KEYCODE) {
+        window.map.pinsElement.removeChild(mapCard);
       }
     });
   };
@@ -45,26 +56,18 @@
       window.data.ads = data;
     }
 
-    var pins = [];
     var k = 0;
     for (var i = 0; i < window.data.ads.length; i++) {
       if (k >= PINS_QUANTITY) {
         break;
       }
       if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
-        pins.innerHTML = '';
         k++;
         insertPin(window.data.ads[i]);
-        pins.push(window.data.ads[i]);
-
       }
     }
 
-    var firstPin = pins[0];
-
     window.map = {
-      firstPin: firstPin,
-      pins: pins,
       pinsElement: pinsElement,
       fragmentPin: fragmentPin
     };
@@ -72,7 +75,6 @@
 
   var drawPins = function () {
     window.map.pinsElement.innerHTML = '';
-    window.card.activateAd(window.map.firstPin);
     window.map.pinsElement.appendChild(mapPinMainElement);
     window.map.pinsElement.appendChild(window.map.fragmentPin);
   };

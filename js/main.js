@@ -2,8 +2,6 @@
 
 (function () {
 
-  var ENTER_KEYCODE = 13;
-
   var activateMap = function () {
     var mapElement = document.querySelector('.map');
     mapElement.classList.remove('map--faded');
@@ -17,8 +15,6 @@
   var pushMainPin = function () {
     activateMap();
     activateForm();
-    window.card.activateAd(window.map.firstPin);
-    window.address.changeAddressCoordinates();
     window.map.pinsElement.appendChild(window.map.fragmentPin);
 
     window.form.roomsElement.addEventListener('change', function () {
@@ -47,18 +43,18 @@
 
   };
 
-  window.address.mainMapPinElement.addEventListener('mousedown', function () {
+  window.movement.mainMapPinElement.addEventListener('mousedown', function () {
+    if (window.isMainPinUsed) {
+      return;
+    }
+    window.isMainPinUsed = true;
     pushMainPin();
   });
 
-  window.address.mainMapPinElement.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
+  window.movement.mainMapPinElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.universal.ENTER_KEYCODE) {
       pushMainPin();
     }
   });
-
-  window.main = {
-    ENTER_KEYCODE: ENTER_KEYCODE
-  };
 
 })();

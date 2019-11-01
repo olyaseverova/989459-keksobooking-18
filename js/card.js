@@ -2,15 +2,12 @@
 
 (function () {
 
-  var ESC_KEYCODE = 27;
-
   var houseTypes = {
     flat: 'Квартира',
     bungalo: 'Бунгало',
     house: 'Дом',
     palace: 'Дворец',
   };
-
 
   var activateAd = function (pin) {
     var fragmentCard = document.createDocumentFragment();
@@ -82,8 +79,8 @@
       window.map.pinsElement.removeChild(mapCard);
     });
 
-    window.data.mapElement.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
+    cardCloseElement.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.universal.ENTER_KEYCODE) {
         window.map.pinsElement.removeChild(mapCard);
       }
     });

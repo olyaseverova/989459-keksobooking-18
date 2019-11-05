@@ -9,11 +9,28 @@
   var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
   var houseTypeElement = document.querySelector('#housing-type');
-  var mapPinMainElement = document.querySelector('.map__pin--main');
+
+  var errorHandler = function () {
+    var errorElement = document.querySelector('#error');
+    var cloneErrorElement = errorElement.content.cloneNode(true);
+    var errorContentElement = cloneErrorElement.querySelector('div');
+    document.body.append(errorContentElement);
+
+    document.addEventListener('click', function () {
+      document.body.removeChild(errorContentElement);
+    });
+
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.universal.ESC_KEYCODE) {
+        document.body.removeChild(errorContentElement);
+      }
+    });
+  };
 
   window.data = {
     ads: null,
-    mapElement: mapElement
+    mapElement: mapElement,
+    errorHandler: errorHandler
   };
 
   var insertPin = function (ad) {
@@ -28,23 +45,23 @@
     fragmentPin.appendChild(clonePinElement);
 
     clonePinElement.addEventListener('mousedown', function () {
-      var mapCard = window.map.pinsElement.querySelector('.map__card');
+      var mapCard = pinsElement.querySelector('.map__card');
       if (mapCard !== null) {
-        window.map.pinsElement.removeChild(mapCard);
+        pinsElement.removeChild(mapCard);
       }
       window.card.activateAd(clonePinElement.ad);
     });
 
     clonePinElement.addEventListener('keydown', function (evt) {
-      var mapCard = window.map.pinsElement.querySelector('.map__card');
+      var mapCard = pinsElement.querySelector('.map__card');
       if (evt.keyCode === window.universal.ENTER_KEYCODE) {
         window.card.activateAd(clonePinElement.ad);
       }
       if (mapCard !== null && evt.keyCode === window.universal.ENTER_KEYCODE) {
-        window.map.pinsElement.removeChild(mapCard);
+        pinsElement.removeChild(mapCard);
       }
       if (mapCard !== null && evt.keyCode === window.universal.ESC_KEYCODE) {
-        window.map.pinsElement.removeChild(mapCard);
+        pinsElement.removeChild(mapCard);
       }
     });
   };
@@ -74,22 +91,15 @@
   };
 
   var drawPins = function () {
-    window.map.pinsElement.innerHTML = '';
-    window.map.pinsElement.appendChild(mapPinMainElement);
-    window.map.pinsElement.appendChild(window.map.fragmentPin);
+    pinsElement.innerHTML = '';
+    pinsElement.appendChild(window.movement.mainMapPinElement);
+    pinsElement.appendChild(window.map.fragmentPin);
   };
 
   houseTypeElement.addEventListener('change', function () {
     successHandler();
     drawPins();
   });
-
-  var errorHandler = function () {
-    var errorElement = document.querySelector('#error');
-    var cloneErrorElement = errorElement.content.cloneNode(true);
-    var errorContentElement = cloneErrorElement.querySelector('div');
-    document.body.append(errorContentElement);
-  };
 
   window.backend.load(successHandler, errorHandler);
 

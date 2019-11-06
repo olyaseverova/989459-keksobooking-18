@@ -82,7 +82,10 @@
   });
 
   window.movement = {
-    mainMapPinElement: mainMapPinElement
+    mainMapPinElement: mainMapPinElement,
+    addressElement: addressElement,
+    CENTER_OF_MAIN_PIN: CENTER_OF_MAIN_PIN,
+    BOTTOM_OF_MAIN_PIN: BOTTOM_OF_MAIN_PIN
   };
 
 })();

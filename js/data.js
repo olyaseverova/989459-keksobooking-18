@@ -4,11 +4,29 @@
 
   var PINS_QUANTITY = 5;
 
+  var priceTypes = {
+    any: {min: 0, max: 100000000},
+    low: {min: 0, max: 10000},
+    middle: {min: 10000, max: 50000},
+    high: {min: 50000, max: 100000000}
+  };
+
   var mapElement = document.querySelector('.map');
   var pinsElement = document.querySelector('.map__pins');
   var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
   var houseTypeElement = document.querySelector('#housing-type');
+  var housePriceElement = document.querySelector('#housing-price');
+  var houseRoomsElement = document.querySelector('#housing-rooms');
+  var houseGuestsElement = document.querySelector('#housing-guests');
+  var mapCheckbox = document.querySelectorAll('.map__checkbox');
+
+  var wifiFeature = mapCheckbox[0];
+  var dishwasherFeature = mapCheckbox[1];
+  var parkingFeature = mapCheckbox[2];
+  var washerFeature = mapCheckbox[3];
+  var elevatorFeature = mapCheckbox[4];
+  var conditionerFeature = mapCheckbox[5];
 
   var errorHandler = function () {
     var errorElement = document.querySelector('#error');
@@ -78,7 +96,19 @@
       if (k >= PINS_QUANTITY) {
         break;
       }
-      if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
+      var ok = isFirstTime || (houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any')
+        && (priceTypes[housePriceElement.value].min < window.data.ads[i].offer.price && priceTypes[housePriceElement.value].max > window.data.ads[i].offer.price)
+        && (Number.parseInt(houseRoomsElement.value, 10) === window.data.ads[i].offer.rooms || houseRoomsElement.value === 'any')
+        && (Number.parseInt(houseGuestsElement.value, 10) === window.data.ads[i].offer.guests || houseGuestsElement.value === 'any');
+
+      ok = wifiFeature.checked ? ok && window.data.ads[i].offer.features.includes('wifi') : ok;
+      ok = dishwasherFeature.checked ? ok && window.data.ads[i].offer.features.includes('dishwasher') : ok;
+      ok = parkingFeature.checked ? ok && window.data.ads[i].offer.features.includes('parking') : ok;
+      ok = washerFeature.checked ? ok && window.data.ads[i].offer.features.includes('washer') : ok;
+      ok = elevatorFeature.checked ? ok && window.data.ads[i].offer.features.includes('elevator') : ok;
+      ok = conditionerFeature.checked ? ok && window.data.ads[i].offer.features.includes('conditioner') : ok;
+
+      if (ok) {
         k++;
         insertPin(window.data.ads[i]);
       }
@@ -88,6 +118,7 @@
       pinsElement: pinsElement,
       fragmentPin: fragmentPin
     };
+
   };
 
   var drawPins = function () {
@@ -100,6 +131,52 @@
     successHandler();
     drawPins();
   });
+
+  housePriceElement.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  houseRoomsElement.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  houseGuestsElement.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  wifiFeature.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  dishwasherFeature.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  parkingFeature.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  washerFeature.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  elevatorFeature.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
+  conditionerFeature.addEventListener('change', function () {
+    successHandler();
+    drawPins();
+  });
+
 
   window.backend.load(successHandler, errorHandler);
 

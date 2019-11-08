@@ -4,29 +4,24 @@
 
   var PINS_QUANTITY = 5;
 
-  var priceTypes = {
-    any: {min: 0, max: 100000000},
-    low: {min: 0, max: 10000},
-    middle: {min: 10000, max: 50000},
-    high: {min: 50000, max: 100000000}
+  var PriceTypes = {
+    ANY: {min: 0, max: 100000000},
+    LOW: {min: 0, max: 10000},
+    MIDDLE: {min: 10000, max: 50000},
+    HIGH: {min: 50000, max: 100000000}
   };
 
+  var formElement = document.querySelector('.map__filters');
   var mapElement = document.querySelector('.map');
   var pinsElement = document.querySelector('.map__pins');
   var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
+
   var houseTypeElement = document.querySelector('#housing-type');
   var housePriceElement = document.querySelector('#housing-price');
   var houseRoomsElement = document.querySelector('#housing-rooms');
   var houseGuestsElement = document.querySelector('#housing-guests');
   var mapCheckbox = document.querySelectorAll('.map__checkbox');
-
-  var wifiFeature = mapCheckbox[0];
-  var dishwasherFeature = mapCheckbox[1];
-  var parkingFeature = mapCheckbox[2];
-  var washerFeature = mapCheckbox[3];
-  var elevatorFeature = mapCheckbox[4];
-  var conditionerFeature = mapCheckbox[5];
 
   var errorHandler = function () {
     var errorElement = document.querySelector('#error');
@@ -48,7 +43,8 @@
   window.data = {
     ads: null,
     mapElement: mapElement,
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+    formElement: formElement
   };
 
   var insertPin = function (ad) {
@@ -96,17 +92,16 @@
       if (k >= PINS_QUANTITY) {
         break;
       }
-      var ok = isFirstTime || (houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any')
-        && (priceTypes[housePriceElement.value].min < window.data.ads[i].offer.price && priceTypes[housePriceElement.value].max > window.data.ads[i].offer.price)
-        && (Number.parseInt(houseRoomsElement.value, 10) === window.data.ads[i].offer.rooms || houseRoomsElement.value === 'any')
-        && (Number.parseInt(houseGuestsElement.value, 10) === window.data.ads[i].offer.guests || houseGuestsElement.value === 'any');
+      var ok = true;
+      ok = ok && (houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any');
+      ok = ok && (PriceTypes[housePriceElement.value.toUpperCase()].min < window.data.ads[i].offer.price && PriceTypes[housePriceElement.value.toUpperCase()].max > window.data.ads[i].offer.price);
+      ok = ok && (Number.parseInt(houseRoomsElement.value, 10) === window.data.ads[i].offer.rooms || houseRoomsElement.value === 'any');
+      ok = ok && (Number.parseInt(houseGuestsElement.value, 10) === window.data.ads[i].offer.guests || houseGuestsElement.value === 'any');
+      ok = ok || isFirstTime;
 
-      ok = wifiFeature.checked ? ok && window.data.ads[i].offer.features.includes('wifi') : ok;
-      ok = dishwasherFeature.checked ? ok && window.data.ads[i].offer.features.includes('dishwasher') : ok;
-      ok = parkingFeature.checked ? ok && window.data.ads[i].offer.features.includes('parking') : ok;
-      ok = washerFeature.checked ? ok && window.data.ads[i].offer.features.includes('washer') : ok;
-      ok = elevatorFeature.checked ? ok && window.data.ads[i].offer.features.includes('elevator') : ok;
-      ok = conditionerFeature.checked ? ok && window.data.ads[i].offer.features.includes('conditioner') : ok;
+      for (var j = 0; j < mapCheckbox.length; j++) {
+        ok = mapCheckbox[j].checked ? ok && window.data.ads[i].offer.features.includes(mapCheckbox[j].value) : ok;
+      }
 
       if (ok) {
         k++;
@@ -121,62 +116,22 @@
 
   };
 
-  var drawPins = function () {
+  var drawPins = window.debounce(function () {
     pinsElement.innerHTML = '';
     pinsElement.appendChild(window.movement.mainMapPinElement);
     pinsElement.appendChild(window.map.fragmentPin);
-  };
-
-  houseTypeElement.addEventListener('change', function () {
-    successHandler();
-    drawPins();
   });
 
-  housePriceElement.addEventListener('change', function () {
-    successHandler();
-    drawPins();
+  formElement.addEventListener('change', function (evt) {
+    if (evt.target.classList.contains('map__filter')) {
+      successHandler();
+      drawPins();
+    }
+    if (evt.target.classList.contains('map__checkbox')) {
+      successHandler();
+      drawPins();
+    }
   });
-
-  houseRoomsElement.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  houseGuestsElement.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  wifiFeature.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  dishwasherFeature.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  parkingFeature.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  washerFeature.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  elevatorFeature.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
-  conditionerFeature.addEventListener('change', function () {
-    successHandler();
-    drawPins();
-  });
-
 
   window.backend.load(successHandler, errorHandler);
 

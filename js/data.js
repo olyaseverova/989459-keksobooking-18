@@ -4,11 +4,24 @@
 
   var PINS_QUANTITY = 5;
 
+  var PriceTypes = {
+    ANY: {min: 0, max: 100000000},
+    LOW: {min: 0, max: 10000},
+    MIDDLE: {min: 10000, max: 50000},
+    HIGH: {min: 50000, max: 100000000}
+  };
+
+  var formElement = document.querySelector('.map__filters');
   var mapElement = document.querySelector('.map');
   var pinsElement = document.querySelector('.map__pins');
   var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
+
   var houseTypeElement = document.querySelector('#housing-type');
+  var housePriceElement = document.querySelector('#housing-price');
+  var houseRoomsElement = document.querySelector('#housing-rooms');
+  var houseGuestsElement = document.querySelector('#housing-guests');
+  var mapCheckbox = document.querySelectorAll('.map__checkbox');
 
   var errorHandler = function () {
     var errorElement = document.querySelector('#error');
@@ -30,7 +43,8 @@
   window.data = {
     ads: null,
     mapElement: mapElement,
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+    formElement: formElement
   };
 
   var insertPin = function (ad) {
@@ -66,7 +80,20 @@
     });
   };
 
-  var successHandler = function (data) {
+  var isAdOk = function (ad) {
+    var ok = true;
+    ok = ok && (houseTypeElement.value === ad.offer.type || houseTypeElement.value === 'any');
+    ok = ok && (PriceTypes[housePriceElement.value.toUpperCase()].min < ad.offer.price && PriceTypes[housePriceElement.value.toUpperCase()].max > ad.offer.price);
+    ok = ok && (Number.parseInt(houseRoomsElement.value, 10) === ad.offer.rooms || houseRoomsElement.value === 'any');
+    ok = ok && (Number.parseInt(houseGuestsElement.value, 10) === ad.offer.guests || houseGuestsElement.value === 'any');
+
+    for (var j = 0; j < mapCheckbox.length; j++) {
+      ok = mapCheckbox[j].checked ? ok && ad.offer.features.includes(mapCheckbox[j].value) : ok;
+    }
+    return ok;
+  };
+
+  var successHandler = window.debounce(function (data) {
     var isFirstTime = false;
     if (!window.data.ads) {
       isFirstTime = true;
@@ -78,7 +105,7 @@
       if (k >= PINS_QUANTITY) {
         break;
       }
-      if (isFirstTime || houseTypeElement.value === window.data.ads[i].offer.type || houseTypeElement.value === 'any') {
+      if (isFirstTime || isAdOk(window.data.ads[i])) {
         k++;
         insertPin(window.data.ads[i]);
       }
@@ -88,17 +115,20 @@
       pinsElement: pinsElement,
       fragmentPin: fragmentPin
     };
-  };
 
-  var drawPins = function () {
+  });
+
+  var drawPins = window.debounce(function () {
     pinsElement.innerHTML = '';
     pinsElement.appendChild(window.movement.mainMapPinElement);
     pinsElement.appendChild(window.map.fragmentPin);
-  };
+  });
 
-  houseTypeElement.addEventListener('change', function () {
-    successHandler();
-    drawPins();
+  formElement.addEventListener('change', function (evt) {
+    if (evt.target.classList.contains('map__filter') || evt.target.classList.contains('map__checkbox')) {
+      successHandler();
+      drawPins();
+    }
   });
 
   window.backend.load(successHandler, errorHandler);

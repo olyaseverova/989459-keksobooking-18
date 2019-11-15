@@ -4,24 +4,11 @@
 
   var PINS_QUANTITY = 5;
 
-  var PriceTypes = {
-    ANY: {min: 0, max: 100000000},
-    LOW: {min: 0, max: 10000},
-    MIDDLE: {min: 10000, max: 50000},
-    HIGH: {min: 50000, max: 100000000}
-  };
-
   var formElement = document.querySelector('.map__filters');
   var mapElement = document.querySelector('.map');
   var pinsElement = document.querySelector('.map__pins');
   var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
-
-  var houseTypeElement = document.querySelector('#housing-type');
-  var housePriceElement = document.querySelector('#housing-price');
-  var houseRoomsElement = document.querySelector('#housing-rooms');
-  var houseGuestsElement = document.querySelector('#housing-guests');
-  var mapCheckbox = document.querySelectorAll('.map__checkbox');
 
   var errorHandler = function () {
     var errorElement = document.querySelector('#error');
@@ -42,9 +29,12 @@
 
   window.data = {
     ads: null,
+    fragmentPin: fragmentPin,
     mapElement: mapElement,
     errorHandler: errorHandler,
-    formElement: formElement
+    formElement: formElement,
+    pinsElement: pinsElement,
+    PINS_QUANTITY: PINS_QUANTITY
   };
 
   var insertPin = function (ad) {
@@ -80,48 +70,22 @@
     });
   };
 
-  var isAdOk = function (ad) {
-    var ok = true;
-    ok = ok && (houseTypeElement.value === ad.offer.type || houseTypeElement.value === 'any');
-    ok = ok && (PriceTypes[housePriceElement.value.toUpperCase()].min < ad.offer.price && PriceTypes[housePriceElement.value.toUpperCase()].max > ad.offer.price);
-    ok = ok && (Number.parseInt(houseRoomsElement.value, 10) === ad.offer.rooms || houseRoomsElement.value === 'any');
-    ok = ok && (Number.parseInt(houseGuestsElement.value, 10) === ad.offer.guests || houseGuestsElement.value === 'any');
-
-    for (var j = 0; j < mapCheckbox.length; j++) {
-      ok = mapCheckbox[j].checked ? ok && ad.offer.features.includes(mapCheckbox[j].value) : ok;
-    }
-    return ok;
-  };
-
   var successHandler = window.debounce(function (data) {
-    var isFirstTime = false;
     if (!window.data.ads) {
-      isFirstTime = true;
+      window.filter.isFirstTime = true;
       window.data.ads = data;
+    } else {
+      window.filter.isFirstTime = false;
     }
-
-    var k = 0;
-    for (var i = 0; i < window.data.ads.length; i++) {
-      if (k >= PINS_QUANTITY) {
-        break;
-      }
-      if (isFirstTime || isAdOk(window.data.ads[i])) {
-        k++;
-        insertPin(window.data.ads[i]);
-      }
-    }
-
-    window.map = {
-      pinsElement: pinsElement,
-      fragmentPin: fragmentPin
-    };
-
+    window.filter.getPreparedData(window.data.ads).slice(0, PINS_QUANTITY).forEach(function (ad) {
+      insertPin(ad);
+    });
   });
 
   var drawPins = window.debounce(function () {
     pinsElement.innerHTML = '';
     pinsElement.appendChild(window.movement.mainMapPinElement);
-    pinsElement.appendChild(window.map.fragmentPin);
+    pinsElement.appendChild(fragmentPin);
   });
 
   formElement.addEventListener('change', function (evt) {
@@ -132,5 +96,11 @@
   });
 
   window.backend.load(successHandler, errorHandler);
+
+  window.insert = {
+    successHandler: successHandler,
+    drawPins: drawPins,
+    insertPin: insertPin
+  };
 
 })();

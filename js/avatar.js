@@ -16,7 +16,7 @@
   houseElement.style = 'margin: 13px 15px';
   housePreviewElement.append(houseElement);
 
-  var uploadPhotos = function (chooser, preview) {
+  var uploadPhoto = function (chooser, preview) {
     var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -35,12 +35,21 @@
     }
   };
 
+  var removePhoto = function () {
+    avatarPreviewElement.innerHTML = '<img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44">';
+    housePreviewElement.innerHTML = '<img src="img/muffin-grey.svg" alt="Аватар пользователя" width="40" height="44" style="margin-left: 15px; margin-top: 13px;">';
+  };
+
   avatarChooserElement.addEventListener('change', function () {
-    uploadPhotos(avatarChooserElement, avatarElement);
+    uploadPhoto(avatarChooserElement, avatarElement);
   });
 
   houseChooserElement.addEventListener('change', function () {
-    uploadPhotos(houseChooserElement, houseElement);
+    uploadPhoto(houseChooserElement, houseElement);
   });
+
+  window.avatar = {
+    removePhoto: removePhoto
+  };
 
 })();

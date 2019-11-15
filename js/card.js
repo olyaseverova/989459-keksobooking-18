@@ -69,19 +69,19 @@
     cardAvatarElement.src = pin.author.avatar;
 
     fragmentCard.appendChild(cloneCard);
-    window.map.pinsElement.appendChild(fragmentCard);
+    window.data.pinsElement.appendChild(fragmentCard);
     window.data.mapElement.appendChild(cloneCard);
 
-    var mapCard = window.map.pinsElement.querySelector('.map__card');
+    var mapCard = window.data.pinsElement.querySelector('.map__card');
     var cardCloseElement = mapCard.querySelector('.popup__close');
 
     cardCloseElement.addEventListener('click', function () {
-      window.map.pinsElement.removeChild(mapCard);
+      window.data.pinsElement.removeChild(mapCard);
     });
 
     cardCloseElement.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.universal.ENTER_KEYCODE) {
-        window.map.pinsElement.removeChild(mapCard);
+        window.data.pinsElement.removeChild(mapCard);
       }
     });
   };

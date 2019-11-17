@@ -2,17 +2,37 @@
 
 (function () {
 
-  var houseTypes = {
-    flat: 'Квартира',
-    bungalo: 'Бунгало',
-    house: 'Дом',
-    palace: 'Дворец',
+  var HouseTypes = {
+    FLAT: 'Квартира',
+    BUNGALO: 'Бунгало',
+    HOUSE: 'Дом',
+    PALACE: 'Дворец',
+  };
+
+  var fragmentCard = document.createDocumentFragment();
+  var cardElement = document.querySelector('#card');
+
+  var removeCard = function () {
+    var mapCard = window.data.pinsElement.querySelector('.map__card');
+    var cardCloseElement = mapCard.querySelector('.popup__close');
+
+    var onCardCloseClick = function () {
+      window.data.pinsElement.removeChild(mapCard);
+      window.data.pinsElement.removeEventListener('click', onCardCloseClick);
+    };
+
+    var onCardCloseKeydown = function (evt) {
+      if (evt.keyCode === window.universal.ENTER_KEYCODE) {
+        window.data.pinsElement.removeChild(mapCard);
+        window.data.pinsElement.removeEventListener('keydown', onCardCloseKeydown);
+      }
+    };
+
+    cardCloseElement.addEventListener('click', onCardCloseClick);
+    cardCloseElement.addEventListener('keydown', onCardCloseKeydown);
   };
 
   var activateAd = function (pin) {
-    var fragmentCard = document.createDocumentFragment();
-
-    var cardElement = document.querySelector('#card');
     var cloneCard = cardElement.content.cloneNode(true);
 
     var cardTitleElement = cloneCard.querySelector('.popup__title');
@@ -25,7 +45,7 @@
     cardPriceElement.textContent = pin.offer.price + '₽/ночь.';
 
     var cardTypeElement = cloneCard.querySelector('.popup__type');
-    cardTypeElement.textContent = houseTypes[pin.offer.type];
+    cardTypeElement.textContent = HouseTypes[pin.offer.type];
 
     var stringRoom = pin.offer.rooms + '';
     stringRoom = stringRoom.substr(stringRoom.length - 1);
@@ -43,27 +63,22 @@
     cardTimeElement.textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
 
     var cardFeaturesElement = cloneCard.querySelector('.popup__features');
+    var cardFeaturesSrcElement = cardElement.content.cloneNode(true).querySelector('.popup__features');
 
-    for (var k = cardFeaturesElement.children.length - 1; k >= 0; k--) {
-      var comparison = false;
-      pin.offer.features.forEach(function (feature) {
-        if (('popup__feature popup__feature--' + feature) === cardFeaturesElement.children[k].className) {
-          comparison = true;
-        }
-      });
-      if (!comparison) {
-        cardFeaturesElement.removeChild(cardFeaturesElement.children[k]);
-      }
-    }
+    cardFeaturesElement.innerHTML = '';
+    pin.offer.features.forEach(function (feature) {
+      cardFeaturesElement.appendChild(cardFeaturesSrcElement.querySelector('.popup__feature--' + feature));
+    });
 
     var cardDescriptionElement = cloneCard.querySelector('.popup__description');
     cardDescriptionElement.textContent = pin.offer.description;
 
     var cardPhotosElement = cloneCard.querySelector('.popup__photos');
     cardPhotosElement.innerHTML = '';
-    for (var j = 0; j < pin.offer.photos.length; j++) {
-      cardPhotosElement.innerHTML += '<img src="' + pin.offer.photos[j] + '" class="popup__photo" alt="Фотография жилья" width="45" height="40"></img>';
-    }
+
+    pin.offer.photos.forEach(function (photo) {
+      cardPhotosElement.innerHTML += '<img src="' + photo + '" class="popup__photo" alt="Фотография жилья" width="45" height="40"></img>';
+    });
 
     var cardAvatarElement = cloneCard.querySelector('.popup__avatar');
     cardAvatarElement.src = pin.author.avatar;
@@ -71,19 +86,7 @@
     fragmentCard.appendChild(cloneCard);
     window.data.pinsElement.appendChild(fragmentCard);
     window.data.mapElement.appendChild(cloneCard);
-
-    var mapCard = window.data.pinsElement.querySelector('.map__card');
-    var cardCloseElement = mapCard.querySelector('.popup__close');
-
-    cardCloseElement.addEventListener('click', function () {
-      window.data.pinsElement.removeChild(mapCard);
-    });
-
-    cardCloseElement.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.universal.ENTER_KEYCODE) {
-        window.data.pinsElement.removeChild(mapCard);
-      }
-    });
+    removeCard();
   };
 
   window.card = {

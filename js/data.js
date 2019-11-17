@@ -9,32 +9,28 @@
   var pinsElement = document.querySelector('.map__pins');
   var fragmentPin = document.createDocumentFragment();
   var mainPinElement = document.querySelector('#pin');
+  var errorElement = document.querySelector('#error');
+  var isFirstTime = false;
 
   var errorHandler = function () {
-    var errorElement = document.querySelector('#error');
     var cloneErrorElement = errorElement.content.cloneNode(true);
     var errorContentElement = cloneErrorElement.querySelector('div');
     document.body.append(errorContentElement);
 
-    document.addEventListener('click', function () {
+    var onErrorAdClick = function () {
       document.body.removeChild(errorContentElement);
-    });
+      document.body.removeEventListener('click', onErrorAdClick);
+    };
 
-    document.addEventListener('keydown', function (evt) {
+    var onErrorAdKeydown = function (evt) {
       if (evt.keyCode === window.universal.ESC_KEYCODE) {
         document.body.removeChild(errorContentElement);
+        document.body.removeEventListener('keydown', onErrorAdKeydown);
       }
-    });
-  };
+    };
 
-  window.data = {
-    ads: null,
-    fragmentPin: fragmentPin,
-    mapElement: mapElement,
-    errorHandler: errorHandler,
-    formElement: formElement,
-    pinsElement: pinsElement,
-    PINS_QUANTITY: PINS_QUANTITY
+    document.body.addEventListener('click', onErrorAdClick);
+    document.addEventListener('keydown', onErrorAdKeydown);
   };
 
   var insertPin = function (ad) {
@@ -72,10 +68,10 @@
 
   var successHandler = window.debounce(function (data) {
     if (!window.data.ads) {
-      window.filter.isFirstTime = true;
+      isFirstTime = true;
       window.data.ads = data;
     } else {
-      window.filter.isFirstTime = false;
+      isFirstTime = false;
     }
     window.filter.getPreparedData(window.data.ads).slice(0, PINS_QUANTITY).forEach(function (ad) {
       insertPin(ad);
@@ -97,10 +93,16 @@
 
   window.backend.load(successHandler, errorHandler);
 
-  window.insert = {
-    successHandler: successHandler,
-    drawPins: drawPins,
-    insertPin: insertPin
+  window.data = {
+    ads: null,
+    isFirstTime: isFirstTime,
+    fragmentPin: fragmentPin,
+    mapElement: mapElement,
+    errorHandler: errorHandler,
+    formElement: formElement,
+    pinsElement: pinsElement,
+    PINS_QUANTITY: PINS_QUANTITY,
+    successHandler: successHandler
   };
 
 })();

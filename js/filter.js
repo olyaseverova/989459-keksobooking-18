@@ -15,40 +15,23 @@
   var houseGuestsElement = document.querySelector('#housing-guests');
   var mapCheckbox = document.querySelectorAll('.map__checkbox');
 
-  var isFirstTime = false;
-
   var filterHouses = function (ad) {
-    if (isFirstTime) {
-      return true;
-    }
     return houseTypeElement.value === ad.offer.type || houseTypeElement.value === 'any';
   };
 
   var filterPrices = function (ad) {
-    if (isFirstTime) {
-      return true;
-    }
     return PriceTypes[housePriceElement.value.toUpperCase()].min < ad.offer.price && PriceTypes[housePriceElement.value.toUpperCase()].max > ad.offer.price;
   };
 
   var filterRooms = function (ad) {
-    if (isFirstTime) {
-      return true;
-    }
     return Number.parseInt(houseRoomsElement.value, 10) === ad.offer.rooms || houseRoomsElement.value === 'any';
   };
 
   var filterGuests = function (ad) {
-    if (isFirstTime) {
-      return true;
-    }
     return Number.parseInt(houseGuestsElement.value, 10) === ad.offer.guests || houseGuestsElement.value === 'any';
   };
 
   var filterFeatures = function (ad) {
-    if (isFirstTime) {
-      return true;
-    }
     var ok = true;
     for (var j = 0; j < mapCheckbox.length; j++) {
       ok = mapCheckbox[j].checked ? ok && ad.offer.features.includes(mapCheckbox[j].value) : ok;
@@ -63,7 +46,6 @@
   };
 
   window.filter = {
-    isFirstTime: isFirstTime,
     getPreparedData: getPreparedData
   };
 

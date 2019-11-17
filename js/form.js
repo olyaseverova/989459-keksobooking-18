@@ -9,21 +9,86 @@
   var fieldsetsElement = formElement.querySelectorAll('fieldset');
   var mapOverlayElement = window.data.pinsElement.querySelector('.map__overlay');
 
-  var addDisabled = function () {
-    for (var i = 0; i < fieldsetsElement.length; i++) {
-      fieldsetsElement[i].setAttribute('disabled', '');
+  var addErrorValidity = function (element) {
+    element.setCustomValidity('error');
+  };
+
+  var removeErrorValidity = function (element) {
+    element.setCustomValidity('');
+  };
+
+  var roomsElement = document.querySelector('#room_number');
+  var capacityElement = document.querySelector('#capacity');
+
+  var changeRoomsOrCapacity = function () {
+    if (
+      (Number.parseInt(roomsElement.value, 10) <= 3 && Number.parseInt(roomsElement.value, 10) > 0
+      && (capacityElement.value > roomsElement.value || capacityElement.value === '0'))
+      || (roomsElement.value === '100' && capacityElement.value !== '0')) {
+      addErrorValidity(capacityElement);
+      addErrorValidity(roomsElement);
+    } else {
+      removeErrorValidity(capacityElement);
+      removeErrorValidity(roomsElement);
     }
+  };
+
+  var typeElement = document.querySelector('#type');
+  var priceElement = document.querySelector('#price');
+
+  var PriceLimit = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
+  var changePrice = function () {
+    if (Number.parseInt(priceElement.value, 10) < PriceLimit[typeElement.value.toUpperCase()]) {
+      addErrorValidity(priceElement);
+    } else {
+      removeErrorValidity(priceElement);
+    }
+  };
+
+  var timeInElement = document.querySelector('#timein');
+  var timeOutElement = document.querySelector('#timeout');
+
+  var changeTime = function () {
+    if (timeInElement.value !== timeOutElement.value) {
+      addErrorValidity(timeInElement);
+      addErrorValidity(timeOutElement);
+    } else {
+      removeErrorValidity(timeInElement);
+      removeErrorValidity(timeOutElement);
+    }
+  };
+
+  var addDisabled = function () {
+    fieldsetsElement.forEach(function (fieldset) {
+      fieldset.setAttribute('disabled', '');
+    });
   };
 
   var removeDisabled = function () {
-    for (var l = 0; l < fieldsetsElement.length; l++) {
-      fieldsetsElement[l].removeAttribute('disabled');
-    }
+    fieldsetsElement.forEach(function (fieldset) {
+      fieldset.removeAttribute('disabled');
+    });
+  };
+
+  var onFormElementChange = function (elem, funct) {
+    elem.removeEventListener('change', funct);
   };
 
   var updateForm = function () {
+    onFormElementChange(roomsElement, changeRoomsOrCapacity);
+    onFormElementChange(capacityElement, changeRoomsOrCapacity);
+    onFormElementChange(typeElement, changePrice);
+    onFormElementChange(priceElement, changePrice);
+    onFormElementChange(timeInElement, changeTime);
+    onFormElementChange(timeOutElement, changeTime);
     window.avatar.removePhoto();
-    window.insert.successHandler();
+    window.data.successHandler();
     addDisabled();
     formElement.reset();
     window.data.formElement.reset();
@@ -33,9 +98,9 @@
     formElement.classList.add('ad-form--disabled');
     window.data.mapElement.classList.add('map--faded');
     var mapPinElement = window.data.pinsElement.querySelectorAll('.map__pin');
-    for (var i = 1; i < mapPinElement.length; i++) {
-      window.data.pinsElement.removeChild(mapPinElement[i]);
-    }
+    mapPinElement.forEach(function (pin) {
+      window.data.pinsElement.removeChild(pin);
+    });
     var mapCardElement = window.data.pinsElement.querySelector('.map__card');
     if (mapCardElement !== null) {
       window.data.pinsElement.removeChild(mapCardElement);
@@ -50,19 +115,20 @@
     var successContentElement = cloneSuccessElement.querySelector('div');
     document.body.append(successContentElement);
 
-    var closeAd = function () {
+    var onSuccessAdClick = function () {
       document.body.removeChild(successContentElement);
-      document.body.removeEventListener('click', closeAd);
-      document.body.removeEventListener('keydown', closeAd);
+      document.body.removeEventListener('click', onSuccessAdClick);
     };
 
-    document.body.addEventListener('keydown', function (evt) {
+    var onSuccessAdKeydown = function (evt) {
       if (evt.keyCode === window.universal.ESC_KEYCODE) {
         document.body.removeChild(successContentElement);
+        document.body.removeEventListener('keydown', onSuccessAdKeydown);
       }
-    });
+    };
 
-    document.body.addEventListener('click', closeAd);
+    document.body.addEventListener('click', onSuccessAdClick);
+    document.body.addEventListener('keydown', onSuccessAdKeydown);
   };
 
   formElement.addEventListener('submit', function (evt) {
@@ -77,53 +143,6 @@
     updateForm();
   });
 
-  var roomsElement = document.querySelector('#room_number');
-  var capacityElement = document.querySelector('#capacity');
-
-  var changeRoomsOrCapacity = function () {
-    if (
-      (Number.parseInt(roomsElement.value, 10) <= 3 && Number.parseInt(roomsElement.value, 10) > 0
-      && (capacityElement.value > roomsElement.value || capacityElement.value === '0'))
-      || (roomsElement.value === '100' && capacityElement.value !== '0')) {
-      capacityElement.setCustomValidity('error');
-      roomsElement.setCustomValidity('error');
-    } else {
-      capacityElement.setCustomValidity('');
-      roomsElement.setCustomValidity('');
-    }
-  };
-
-  var typeElement = document.querySelector('#type');
-  var priceElement = document.querySelector('#price');
-
-  var priceLimit = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
-
-  var changeTypeOrPrice = function () {
-    if (Number.parseInt(priceElement.value, 10) < priceLimit[typeElement.value]) {
-      priceElement.setCustomValidity('error');
-    } else {
-      priceElement.setCustomValidity('');
-    }
-  };
-
-  var timeInElement = document.querySelector('#timein');
-  var timeOutElement = document.querySelector('#timeout');
-
-  var changeTime = function () {
-    if (timeInElement.value !== timeOutElement.value) {
-      timeInElement.setCustomValidity('error');
-      timeOutElement.setCustomValidity('error');
-    } else {
-      timeInElement.setCustomValidity('');
-      timeOutElement.setCustomValidity('');
-    }
-  };
-
   window.form = {
     addDisabled: addDisabled,
     removeDisabled: removeDisabled,
@@ -134,7 +153,7 @@
 
     typeElement: typeElement,
     priceElement: priceElement,
-    changeTypeOrPrice: changeTypeOrPrice,
+    changePrice: changePrice,
 
     timeInElement: timeInElement,
     timeOutElement: timeOutElement,

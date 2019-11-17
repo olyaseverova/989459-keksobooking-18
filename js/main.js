@@ -19,30 +19,12 @@
     window.form.removeDisabled();
     window.data.pinsElement.appendChild(window.data.fragmentPin);
 
-    window.form.roomsElement.addEventListener('change', function () {
-      window.form.changeRoomsOrCapacity();
-    });
-
-    window.form.capacityElement.addEventListener('change', function () {
-      window.form.changeRoomsOrCapacity();
-    });
-
-    window.form.typeElement.addEventListener('change', function () {
-      window.form.changeTypeOrPrice();
-    });
-
-    window.form.priceElement.addEventListener('change', function () {
-      window.form.changeTypeOrPrice();
-    });
-
-    window.form.timeInElement.addEventListener('change', function () {
-      window.form.changeTime();
-    });
-
-    window.form.timeOutElement.addEventListener('change', function () {
-      window.form.changeTime();
-    });
-
+    window.form.roomsElement.addEventListener('change', window.form.changeRoomsOrCapacity);
+    window.form.capacityElement.addEventListener('change', window.form.changeRoomsOrCapacity);
+    window.form.typeElement.addEventListener('change', window.form.changePrice);
+    window.form.priceElement.addEventListener('change', window.form.changePrice);
+    window.form.timeInElement.addEventListener('change', window.form.changeTime);
+    window.form.timeOutElement.addEventListener('change', window.form.changeTime);
   };
 
   window.movement.mainMapPinElement.addEventListener('mousedown', function () {

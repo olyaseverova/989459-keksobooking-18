@@ -45,11 +45,7 @@
 
   var onChangePrice = function () {
     priceElement.placeholder = PriceLimit[typeElement.value.toUpperCase()];
-    if (Number.parseInt(priceElement.value, 10) < PriceLimit[typeElement.value.toUpperCase()]) {
-      addErrorValidity(priceElement);
-    } else {
-      removeErrorValidity(priceElement);
-    }
+    priceElement.min = PriceLimit[typeElement.value.toUpperCase()];
   };
 
   var timeInElement = document.querySelector('#timein');

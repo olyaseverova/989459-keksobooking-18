@@ -20,7 +20,7 @@
   var roomsElement = document.querySelector('#room_number');
   var capacityElement = document.querySelector('#capacity');
 
-  var changeRoomsOrCapacity = function () {
+  var onChangeRoomsOrCapacity = function () {
     if (
       (Number.parseInt(roomsElement.value, 10) <= 3 && Number.parseInt(roomsElement.value, 10) > 0
       && (capacityElement.value > roomsElement.value || capacityElement.value === '0'))
@@ -43,7 +43,8 @@
     PALACE: 10000
   };
 
-  var changePrice = function () {
+  var onChangePrice = function () {
+    priceElement.placeholder = PriceLimit[typeElement.value.toUpperCase()];
     if (Number.parseInt(priceElement.value, 10) < PriceLimit[typeElement.value.toUpperCase()]) {
       addErrorValidity(priceElement);
     } else {
@@ -54,24 +55,25 @@
   var timeInElement = document.querySelector('#timein');
   var timeOutElement = document.querySelector('#timeout');
 
-  var changeTime = function () {
-    if (timeInElement.value !== timeOutElement.value) {
-      addErrorValidity(timeInElement);
-      addErrorValidity(timeOutElement);
-    } else {
-      removeErrorValidity(timeInElement);
-      removeErrorValidity(timeOutElement);
-    }
+  var onChangeTimeIn = function () {
+    timeOutElement.value = timeInElement.value;
   };
 
-  var addDisabled = function () {
-    fieldsetsElement.forEach(function (fieldset) {
+  var onChangeTimeOut = function () {
+    timeInElement.value = timeOutElement.value;
+  };
+
+  var filterFormElement = document.querySelector('.map__filters');
+  var filterElement = Array.from(filterFormElement.children);
+
+  var addDisabled = function (element) {
+    element.forEach(function (fieldset) {
       fieldset.setAttribute('disabled', '');
     });
   };
 
-  var removeDisabled = function () {
-    fieldsetsElement.forEach(function (fieldset) {
+  var removeDisabled = function (element) {
+    element.forEach(function (fieldset) {
       fieldset.removeAttribute('disabled');
     });
   };
@@ -81,15 +83,16 @@
   };
 
   var updateForm = function () {
-    onFormElementChange(roomsElement, changeRoomsOrCapacity);
-    onFormElementChange(capacityElement, changeRoomsOrCapacity);
-    onFormElementChange(typeElement, changePrice);
-    onFormElementChange(priceElement, changePrice);
-    onFormElementChange(timeInElement, changeTime);
-    onFormElementChange(timeOutElement, changeTime);
+    onFormElementChange(roomsElement, onChangeRoomsOrCapacity);
+    onFormElementChange(capacityElement, onChangeRoomsOrCapacity);
+    onFormElementChange(typeElement, onChangePrice);
+    onFormElementChange(priceElement, onChangePrice);
+    onFormElementChange(timeInElement, onChangeTimeIn);
+    onFormElementChange(timeOutElement, onChangeTimeOut);
     window.avatar.removePhoto();
     window.data.successHandler();
-    addDisabled();
+    addDisabled(filterElement);
+    addDisabled(fieldsetsElement);
     formElement.reset();
     window.data.formElement.reset();
     window.movement.mainMapPinElement.style.left = mainPinLeft;
@@ -144,20 +147,24 @@
   });
 
   window.form = {
+    filterElement: filterElement,
+    fieldsetsElement: fieldsetsElement,
+
     addDisabled: addDisabled,
     removeDisabled: removeDisabled,
 
-    changeRoomsOrCapacity: changeRoomsOrCapacity,
+    onChangeRoomsOrCapacity: onChangeRoomsOrCapacity,
     roomsElement: roomsElement,
     capacityElement: capacityElement,
 
     typeElement: typeElement,
     priceElement: priceElement,
-    changePrice: changePrice,
+    onChangePrice: onChangePrice,
 
     timeInElement: timeInElement,
     timeOutElement: timeOutElement,
-    changeTime: changeTime
+    onChangeTimeIn: onChangeTimeIn,
+    onChangeTimeOut: onChangeTimeOut
   };
 
 })();
